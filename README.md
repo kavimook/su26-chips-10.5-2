@@ -6,9 +6,7 @@
 
 <!-- TODO: Update these for your repo! -->
 
-[![All Specs](https://github.com/saasbook/hw-agile-iterations/actions/workflows/specs.yml/badge.svg)](https://github.com/saasbook/hw-agile-iterations/actions/workflows/specs.yml)
-
----
+![All Specs](https://github.com/kavimook/su26-chips-10.5-2/actions/workflows/specs.yml/badge.svg)---
 
 ## Basic Info
 
