@@ -26,7 +26,7 @@ Rails.application.routes.draw do
   delete '/my_events/:id', to: 'my_events#destroy'
 
   # Routes for Representatives
-  resources :representatives, only: [:index]
+  resources :representatives, only: [:index, :show]
   resources :representatives do
     resources :news_items, only: %i[index show]
   end

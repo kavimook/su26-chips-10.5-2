@@ -5,8 +5,11 @@
 # Table name: representatives
 #
 #  id         :integer          not null, primary key
+#  address    :string
 #  name       :string
 #  ocdid      :string
+#  party      :string
+#  photo_url  :string
 #  title      :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
@@ -40,28 +43,32 @@ class Representative < ApplicationRecord
       # Inspect all the data that's there to make part 1 easier.
       # Rails.logger.debug official
       # official.dig('bio', 'party')
-      ocdid = official['govtrack_id']
+      ocdid = official.dig('references', 'govtrack_id')
       reps << Representative.find_rep(official, ocdid: ocdid, title: title)
     end
     reps
   end
 
   def self.find_rep(official, title: '', ocdid: '')
-    rep = Representative.find_by(ocdid: ocdid, name: official['name'])
-    if rep.nil?
-      rep = Representative.create({ name: official['name'], ocdid: ocdid,
-        title: title, party: official['party'], photo_url: official['photo_url'] })
-    end
+    # Find the existing rep, or initialize a new one in memory if they don't exist
+    rep = Representative.find_or_initialize_by(ocdid: ocdid, name: official['name'])
+    
+    rep.update_from_geocodio(official)
+    
     rep
   end
 
   def update_from_geocodio(official)
-    self.title = official['type']
-    self.ocdid = official['govtrack_id']
-    self.party = official['party']
-    self.photo_url = official['photo_url']
-    # TODO: store the address, phone and website
-    save!
+    bioguide_id = official.dig('references', 'bioguide_id')
+    rep_photo_url = bioguide_id.present? ? "https://theunitedstates.io/images/congress/225x275/#{bioguide_id}.jpg" : nil
+
+    self.update!(
+      title: official['type'],
+      ocdid: official.dig('references', 'govtrack_id'),
+      party: official.dig('bio', 'party'),
+      address: official.dig('contact', 'address'),
+      photo_url: rep_photo_url
+    )
     self
   end
 end

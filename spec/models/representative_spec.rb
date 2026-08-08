@@ -5,15 +5,12 @@
 # Table name: representatives
 #
 #  id         :integer          not null, primary key
-#  city       :string
+#  address    :string
 #  name       :string
 #  ocdid      :string
 #  party      :string
 #  photo_url  :string
-#  state      :string
-#  street     :string
 #  title      :string
-#  zip        :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
@@ -28,35 +25,48 @@ require 'rails_helper'
 
 
 describe Representative, type: :model do
+  before do
+    fake_geocodio_response = {
+      "results" => [{
+        "response" => {
+          "results" => [{
+            "fields" => {
+              "congressional_districts" => [{
+                "current_legislators" => [{
+                  "type" => "representative",
+                  "bio" => { "first_name" => "John", "last_name" => "Doe", "party" => "Democrat" },
+                  "contact" => { "address" => "123 Main St", "phone" => "555-1234" },
+                  "references" => { "bioguide_id" => "D000123", "govtrack_id" => "412345" }
+                }]
+              }]
+            }
+          }]
+        }
+      }]
+    }.to_json
+
+    # Notice it says :post here now!
+    stub_request(:post, /api\.geocod\.io/).
+      to_return(
+        status: 200, 
+        body: fake_geocodio_response, 
+        headers: { 'Content-Type' => 'application/json' }
+      )
+  end
   describe '.civic_api_to_representative_params' do
     let(:rep_info) do
-      {       
-        "results": [{
-          "response": {
-            "results": [{
-              "fields": {
-                "congressional_districts": [{
-                  "name": "Congressional District 12",
-                  "district_number": 12,
-                  "ocd_id": "ocd-division/country:us/state:ca/cd:12",
-                  "current_legislators": [{
-                    "type": "representative",
-                    "bio": {
-                      "first_name": "Jane",
-                      "last_name": "Doe",
-                      "party": "Democrat",
-                      "gender": "F"
-                    },
-                    "contact": {
-                      "url": "https://doe.house.gov",
-                      "address": "1234 Longworth House Office Building; Washington DC 20515",
-                      "phone": "202-225-0000"
-                    },
-                    "social": { "twitter": "repjanedoe" },
-                    "references": {
-                      "bioguide_id": "D000000",
-                      "govtrack_id": "412345"
-                    }
+      {
+        'results' => [{
+          'response' => {
+            'results' => [{
+              'fields' => {
+                'congressional_districts' => [{
+                  'name' => 'Congressional District 12',
+                  'current_legislators' => [{
+                    'type' => 'representative',
+                    'bio' => { 'first_name' => 'Jane', 'last_name' => 'Doe', 'party' => 'Democrat' },
+                    'contact' => { 'address' => '123 Main St', 'phone' => '555-1234' },
+                    'references' => { 'bioguide_id' => 'D000123', 'govtrack_id' => '412345' }
                   }]
                 }]
               }
