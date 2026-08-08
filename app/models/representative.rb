@@ -60,7 +60,7 @@ class Representative < ApplicationRecord
 
   def update_from_geocodio(official)
     bioguide_id = official.dig('references', 'bioguide_id')
-    rep_photo_url = bioguide_id.present? ? "https://theunitedstates.io/images/congress/225x275/#{bioguide_id}.jpg" : nil
+    rep_photo_url = bioguide_id.present? ? "https://unitedstates.github.io/images/congress/225x275/#{bioguide_id}.jpg" : nil
 
     self.update!(
       title: official['type'],
