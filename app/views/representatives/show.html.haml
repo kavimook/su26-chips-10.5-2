@@ -1,4 +1,37 @@
-.container-fluid.bg-light
+.container-fluid.bg-light.p-4
   .row.text-center
     .col-12
-      %h1.text-center= @representative&.name
+      %h1.text-center= @representative.name
+
+  .row.justify-content-center.mt-4
+    .col-md-8
+      .card
+        .card-body
+          .row
+            -# Left Column for the Photo
+            .col-md-4.text-center
+              - if @representative.photo_url.present?
+                = image_tag @representative.photo_url, class: "img-fluid shadow rounded"
+              - else
+                .p-4.bg-secondary.text-white.rounded No Photo Available
+
+            -# Right Column for the Details
+            .col-md-8
+              %h3= @representative.title
+              
+              %p.mt-3
+                %strong Party:
+                = @representative.party
+              
+              - if @representative.address.present?
+                %p
+                  %strong Address:
+                  = @representative.address
+
+              %p
+                %strong OCD ID:
+                = @representative.ocdid
+
+  .row.mt-4
+    .col-12.text-center
+      = link_to 'Back to Search', representatives_path, class: 'btn btn-secondary'
