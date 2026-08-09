@@ -13,19 +13,7 @@ SimpleCov::Formatter::LcovFormatter.config do |c|
 end
 
 SimpleCov.start 'rails' do
-  command_name 'rspec'
-
-  ## CS169: You may want to modify some of the testing configuration.
-
-  # This only shows the more verbose console output on GitHub
-  # You may choose to enable it locally.
-  formatters = [
-    SimpleCov::Formatter::LcovFormatter,
-    SimpleCov::Formatter::HTMLFormatter
-  ]
-  formatters << SimpleCov::Formatter::Console if ENV.fetch('CI', nil)
-
-  SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new(formatters)
+  add_filter 'lib'
 end
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
