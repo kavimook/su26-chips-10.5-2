@@ -6,11 +6,17 @@
 #
 #  id         :integer          not null, primary key
 #  address    :string
+#  birthday   :string
+#  facebook   :string
+#  gender     :string
 #  name       :string
 #  ocdid      :string
 #  party      :string
+#  phone      :string
 #  photo_url  :string
 #  title      :string
+#  twitter    :string
+#  website    :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
@@ -67,7 +73,13 @@ class Representative < ApplicationRecord
       ocdid: official.dig('references', 'govtrack_id'),
       party: official.dig('bio', 'party'),
       address: official.dig('contact', 'address'),
-      photo_url: rep_photo_url
+      photo_url: rep_photo_url,
+      phone: official.dig('contact', 'phone'),
+      website: official.dig('contact', 'url'),
+      twitter: official.dig('social', 'twitter'),
+      facebook: official.dig('social', 'facebook'),
+      birthday: official.dig('bio', 'birthday'),
+      gender: official.dig('bio', 'gender')
     )
     self
   end

@@ -6,11 +6,17 @@
 #
 #  id         :integer          not null, primary key
 #  address    :string
+#  birthday   :string
+#  facebook   :string
+#  gender     :string
 #  name       :string
 #  ocdid      :string
 #  party      :string
+#  phone      :string
 #  photo_url  :string
 #  title      :string
+#  twitter    :string
+#  website    :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #

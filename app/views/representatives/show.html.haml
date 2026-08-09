@@ -23,10 +23,38 @@
                 %strong Party:
                 = @representative.party
               
+              - if @representative.phone.present?
+                %p
+                  %strong Phone:
+                  = @representative.phone
+
+              - if @representative.website.present?
+                %p
+                  %strong Website:
+                  = link_to @representative.website, @representative.website, target: '_blank', rel: 'noopener'
+
               - if @representative.address.present?
                 %p
                   %strong Address:
                   = @representative.address
+                  
+              - if @representative.birthday.present?
+                %p
+                  %strong Birthday:
+                  = @representative.birthday
+
+              - if @representative.gender.present?
+                %p
+                  %strong Gender:
+                  = @representative.gender
+
+              - if @representative.twitter.present? || @representative.facebook.present?
+                %p
+                  %strong Social:
+                  - if @representative.twitter.present?
+                    = link_to "Twitter", "https://twitter.com/#{@representative.twitter}", target: '_blank', rel: 'noopener', class: 'me-2'
+                  - if @representative.facebook.present?
+                    = link_to "Facebook", "https://facebook.com/#{@representative.facebook}", target: '_blank', rel: 'noopener'
 
               %p
                 %strong OCD ID:
