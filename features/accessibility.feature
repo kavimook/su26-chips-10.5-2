@@ -31,8 +31,11 @@ Scenario: The Representatives Page
 
 ## CS169: Add the first page here.
 # Be sure to tag the Scenario with @a11y
-# @a11y
-# Scenario: ...
+@a11y
+Scenario: The Representative Profile Page
+    Given a representative named "Jane Doe" exists with a full profile
+    When I visit the profile page for "Jane Doe"
+    Then the page should be axe clean
 
 ## CS169: Add the second page here.
 # @a11y
