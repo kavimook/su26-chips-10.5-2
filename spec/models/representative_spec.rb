@@ -6,17 +6,11 @@
 #
 #  id         :integer          not null, primary key
 #  address    :string
-#  birthday   :string
-#  facebook   :string
-#  gender     :string
 #  name       :string
 #  ocdid      :string
 #  party      :string
-#  phone      :string
 #  photo_url  :string
 #  title      :string
-#  twitter    :string
-#  website    :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
@@ -88,21 +82,18 @@ describe Representative do
       end.to change(described_class, :count).by(1)
     end
 
-    it 'does not create a duplicate representative if they already exist in the database' do
-      described_class.create!(
-        name: 'Jane Doe',
-        ocdid: '412345',
-        title: 'Representative'
-      )
+    context 'when the representative already exists' do
+      before do
+        described_class.create!(name: 'Jane Doe', ocdid: '412345', title: 'Representative')
+      end
 
-      expect do
-        described_class.civic_api_to_representative_params(rep_info)
-      end.not_to change(described_class, :count)
+      it 'does not create a duplicate and still returns the existing representative' do
+        expect { described_class.civic_api_to_representative_params(rep_info) }
+          .not_to change(described_class, :count)
 
-      # 3. Ensure the method still returns the existing representative in its output
-      reps = described_class.civic_api_to_representative_params(rep_info)
-      expect(reps.length).to eq(1)
-      expect(reps.first.name).to eq('Jane Doe')
+        reps = described_class.civic_api_to_representative_params(rep_info)
+        expect(reps.map(&:name)).to eq(['Jane Doe'])
+      end
     end
 
     context 'when the legislator is missing optional fields' do
@@ -131,22 +122,17 @@ describe Representative do
         }
       end
 
+      let(:expected_blank_fields) do
+        { party: nil, address: nil, phone: nil, website: nil, twitter: nil,
+          facebook: nil, birthday: nil, gender: nil, photo_url: nil }
+      end
+
       it 'does not raise and leaves missing fields nil' do
-        expect do
-          described_class.civic_api_to_representative_params(sparse_rep_info)
-        end.not_to raise_error
+        expect { described_class.civic_api_to_representative_params(sparse_rep_info) }
+          .not_to raise_error
 
         rep = described_class.find_by(ocdid: '999999')
-        expect(rep.name).to eq('Sam Smith')
-        expect(rep.party).to be_nil
-        expect(rep.address).to be_nil
-        expect(rep.phone).to be_nil
-        expect(rep.website).to be_nil
-        expect(rep.twitter).to be_nil
-        expect(rep.facebook).to be_nil
-        expect(rep.birthday).to be_nil
-        expect(rep.gender).to be_nil
-        expect(rep.photo_url).to be_nil
+        expect(rep).to have_attributes(expected_blank_fields.merge(name: 'Sam Smith'))
       end
     end
   end

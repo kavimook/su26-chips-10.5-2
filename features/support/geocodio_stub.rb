@@ -31,8 +31,8 @@ Before do
     }]
   }.to_json
 
-  stub_request(:post, /api\.geocod\.io/).
-    to_return(
+  stub_request(:post, /api\.geocod\.io/)
+    .to_return(
       status: 200,
       body: fake_geocodio_response,
       headers: { 'Content-Type' => 'application/json' }

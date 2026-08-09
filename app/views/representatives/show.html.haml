@@ -1,4 +1,4 @@
-.container-fluid.bg-light.p-4
+.container-fluid.bg-light.p-4.representative-profile
   .row.text-center
     .col-12
       %h1.text-center= @representative.name
@@ -11,14 +11,15 @@
             -# Left Column for the Photo
             .col-md-4.text-center
               - if @representative.photo_url.present?
-                = image_tag @representative.photo_url, class: "img-fluid shadow rounded", alt: "Photo of #{@representative.name}"
+                - photo_alt = "Photo of #{@representative.name}"
+                = image_tag @representative.photo_url, class: 'img-fluid shadow rounded', alt: photo_alt
               - else
                 .p-4.bg-secondary.text-white.rounded No Photo Available
 
             -# Right Column for the Details
             .col-md-8
               %h2= @representative.title
-              
+
               %p.mt-3
                 %strong Party:
                 = @representative.party
@@ -51,10 +52,7 @@
               - if @representative.twitter.present? || @representative.facebook.present?
                 %p
                   %strong Social:
-                  - if @representative.twitter.present?
-                    = link_to "Twitter", "https://twitter.com/#{@representative.twitter}", target: '_blank', rel: 'noopener', class: 'me-2'
-                  - if @representative.facebook.present?
-                    = link_to "Facebook", "https://facebook.com/#{@representative.facebook}", target: '_blank', rel: 'noopener'
+                  = social_links(@representative)
 
               %p
                 %strong OCD ID:
