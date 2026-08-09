@@ -100,3 +100,18 @@ div.actions {
 label {
   display: block;
 }
+
+.representative-profile {
+  .card {
+    transition: box-shadow 0.15s ease-in-out;
+
+    &:hover {
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  img.img-fluid {
+    max-height: 275px;
+    object-fit: cover;
+  }
+}

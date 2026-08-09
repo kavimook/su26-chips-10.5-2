@@ -6,6 +6,10 @@ on:
 jobs:
   pronto:
     runs-on: ubuntu-latest
+    permissions:
+      statuses: write
+      pull-requests: write
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
