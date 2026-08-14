@@ -19,8 +19,9 @@ module SenatorSteps
     }
   end
 
+  # rubocop:disable Metrics/ParameterLists
   def legislator(type:, first_name:, last_name:, party:, bioguide_id:, govtrack_id:)
-    {
+  # rubocop:enable Metrics/ParameterLists    {
       "type" => type,
       "bio" => { "first_name" => first_name, "last_name" => last_name, "party" => party },
       "references" => { "bioguide_id" => bioguide_id, "govtrack_id" => govtrack_id }
@@ -51,10 +52,6 @@ Given('the Civic API returns Santa Clara County officials for {string}') do |add
   payload = civic_payload_for(district_number: 18,
                               senator_officials: [ca_senator_padilla, ca_senator_schiff])
   allow(Representative).to receive(:geocodio_search).with(address).and_return(payload)
-end
-
-When('I visit the search page for {string}') do |address|
-  visit search_representatives_path(address: address)
 end
 
 Then('I should see senators for {string}') do |name|

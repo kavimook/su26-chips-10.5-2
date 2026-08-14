@@ -5,16 +5,16 @@ describe RepresentativesController, type: :controller do
     # Create a dummy representative in the test database
     before do
       fake_geocodio_response = {
-        "results" => [{
-          "response" => {
-            "results" => [{
-              "fields" => {
-                "congressional_districts" => [{
-                  "current_legislators" => [{
-                    "type" => "representative",
-                    "bio" => { "first_name" => "John", "last_name" => "Doe", "party" => "Democrat" },
-                    "contact" => { "address" => "123 Main St", "phone" => "555-1234" },
-                    "references" => { "bioguide_id" => "D000123", "govtrack_id" => "412345" }
+        'results' => [{
+          'response' => {
+            'results' => [{
+              'fields' => {
+                'congressional_districts' => [{
+                  'current_legislators' => [{
+                    'type' => 'representative',
+                    'bio' => { 'first_name' => 'John', 'last_name' => 'Doe', 'party' => 'Democrat' },
+                    'contact' => { 'address' => '123 Main St', 'phone' => '555-1234' },
+                    'references' => { 'bioguide_id' => 'D000123', 'govtrack_id' => '412345' }
                   }]
                 }]
               }
@@ -24,13 +24,14 @@ describe RepresentativesController, type: :controller do
       }.to_json
 
       # Notice it says :post here now!
-      stub_request(:post, /api\.geocod\.io/).
-        to_return(
-          status: 200, 
-          body: fake_geocodio_response, 
+      stub_request(:post, /api\.geocod\.io/)
+        .to_return(
+          status: 200,
+          body: fake_geocodio_response,
           headers: { 'Content-Type' => 'application/json' }
         )
     end
+
     let(:rep) do
       Representative.create!(
         name: 'John Doe',
