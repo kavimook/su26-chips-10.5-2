@@ -1,10 +1,22 @@
 %p{style: "color: green"}= notice
 
-= render @bill
+.row
+  .col-12.col-md-8.offset-md-2
+    %h1.text-center= bill_number_label_for_record(@bill)
+    %h4.text-center.text-muted= @bill.title
 
-%div
-  = link_to "Edit this bill", edit_bill_path(@bill)
-  |
-  = link_to "Back to bills", bills_path
+    %dl.row.mt-4
+      %dt.col-sm-3 Congress
+      %dd.col-sm-9= @bill.congress
 
-  = button_to "Destroy this bill", @bill, method: :delete
+      %dt.col-sm-3 Type
+      %dd.col-sm-9= @bill.bill_type.upcase
+
+      %dt.col-sm-3 Chamber
+      %dd.col-sm-9= @bill.original_chamber.titleize
+
+      %dt.col-sm-3 Summary
+      %dd.col-sm-9= @bill.summary.presence || 'No summary available.'
+
+    .text-center.mt-3
+      = link_to 'Back to search', bills_path, class: 'btn btn-secondary'

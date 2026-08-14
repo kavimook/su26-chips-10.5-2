@@ -3,7 +3,23 @@ class BillsController < ApplicationController
 
   # GET /bills or /bills.json
   def index
-    @bills = Bill.all
+    @congress = params[:congress].presence
+    @bill_type = params[:bill_type].presence
+
+    if @bill_type.present? && @congress.blank?
+      flash.now[:alert] = 'Please provide a Congress session number to search by bill type.'
+      @bills = []
+      @total_count = 0
+      return
+    end
+
+    response = fetch_bills(@congress, @bill_type)
+    @bills = response['bills'] || []
+    @total_count = response.dig('pagination', 'count') || @bills.size
+  rescue Congress::Error => e
+    flash.now[:alert] = "Could not reach Congress.gov: #{e.message}"
+    @bills = []
+    @total_count = 0
   end
 
   # GET /bills/1 or /bills/1.json

@@ -2,12 +2,63 @@
 
 - content_for :title, "Bills"
 
-%h1 Bills
+%h1.text-center Bills
 
-%div{id: "bills"}
-  - @bills.each do |bill|
-    = render bill
-    %p
-      = link_to "Show this bill", bill
+.row
+  .col-12.col-md-8.offset-md-2
+    = form_with url: bills_path, method: :get, local: true do
+      .form-group.row
+        .col-sm-3
+          = label_tag :congress, 'Congress session:', class: 'col-form-label'
+        .col-sm-9
+          = number_field_tag :congress, params[:congress], class: 'form-control', placeholder: '119'
+      .form-group.row
+        .col-sm-3
+          = label_tag :bill_type, 'Bill type:', class: 'col-form-label'
+        .col-sm-9
+          = select_tag :bill_type,
+                       options_for_select(Bill.bill_types.map { |code, label| [label, code] }, params[:bill_type]),
+                       include_blank: 'Any', class: 'form-control'
+      .actions.text-center.mt-3
+        = submit_tag 'Search', class: 'btn btn-primary'
 
-= link_to "New bill", new_bill_path
+- if flash[:alert]
+  .row.mt-3
+    .col-12.col-md-8.offset-md-2
+      .alert.alert-warning= flash[:alert]
+
+.row.mt-4
+  .col-12.text-center
+    %p Showing #{@bills.size} of #{@total_count} results
+
+.row
+  .col-12
+    .table-responsive-md
+      %table.table.table-striped.table-hover
+        %caption Table of Bills
+        %thead.thead-dark
+          %tr
+            %th{ scope: 'col' } "#"
+            %th{ scope: 'col' } Title
+            %th{ scope: 'col' } Congress
+            %th{ scope: 'col' } Type
+            %th{ scope: 'col' } Chamber
+            %th{ scope: 'col' } Last Action
+            %th{ scope: 'col' }
+        %tbody
+          - @bills.each do |bill|
+            %tr
+              %td= bill_number_label(bill)
+              %td= bill['title']
+              %td= bill['congress']
+              %td= bill['type']
+              %td= bill['originChamber']
+              %td= bill_last_action(bill)
+              %td
+                = button_to 'Save', bills_path, method: :post,
+                            params: { bill: { title:             bill['title'],
+                                              congress:          bill['congress'],
+                                              number:            bill['number'],
+                                              bill_type:         bill['type'].to_s.downcase,
+                                              original_chamber:  bill['originChamber'].to_s.downcase } },
+                            class: 'btn btn-success btn-sm'
