@@ -23,7 +23,7 @@ require 'rails_helper'
 # RSpec.describe Representative do
 # end
 
-describe Representative, type: :model do
+describe Representative do
   before do
     fake_geocodio_response = {
       'results' => [{
@@ -78,25 +78,26 @@ describe Representative, type: :model do
 
     it 'creates a new representative when one does not exist' do
       expect do
-        Representative.civic_api_to_representative_params(rep_info)
-      end.to change(Representative, :count).by(1)
+        described_class.civic_api_to_representative_params(rep_info)
+      end.to change(described_class, :count).by(1)
     end
 
-    it 'does not create a duplicate representative if they already exist in the database' do
-      Representative.create!(
-        name: 'Jane Doe',
-        ocdid: '412345',
-        title: 'Representative'
-      )
+    context 'when the representative already exists' do
+      before do
+        described_class.create!(name: 'Jane Doe', ocdid: '412345', title: 'Representative')
+      end
 
-      expect do
-        Representative.civic_api_to_representative_params(rep_info)
-      end.not_to change(Representative, :count)
+      it 'does not create a duplicate' do
+        expect do
+          described_class.civic_api_to_representative_params(rep_info)
+        end.not_to change(described_class, :count)
+      end
 
-      # 3. Ensure the method still returns the existing representative in its output
-      reps = Representative.civic_api_to_representative_params(rep_info)
-      expect(reps.length).to eq(1)
-      expect(reps.first.name).to eq('Jane Doe')
+      it 'returns the existing representative' do
+        reps = described_class.civic_api_to_representative_params(rep_info)
+        expect(reps.length).to eq(1)
+        expect(reps.first.name).to eq('Jane Doe')
+      end
     end
   end
 end

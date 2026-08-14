@@ -39,17 +39,16 @@ class Representative < ApplicationRecord
 
     @legislators.each_with_index do |official, _index|
       official['name'] = "#{official.dig('bio', 'first_name')} #{official.dig('bio', 'last_name')}"
-      title = official['type']
       # Inspect all the data that's there to make part 1 easier.
       # Rails.logger.debug official
       # official.dig('bio', 'party')
       ocdid = official.dig('references', 'govtrack_id')
-      reps << Representative.find_rep(official, ocdid: ocdid, title: title)
+      reps << Representative.find_rep(official, ocdid: ocdid)
     end
     reps
   end
 
-  def self.find_rep(official, title: '', ocdid: '')
+  def self.find_rep(official, ocdid: '')
     # Find the existing rep, or initialize a new one in memory if they don't exist
     rep = Representative.find_or_initialize_by(ocdid: ocdid, name: official['name'])
 
@@ -60,7 +59,8 @@ class Representative < ApplicationRecord
 
   def update_from_geocodio(official)
     bioguide_id = official.dig('references', 'bioguide_id')
-    rep_photo_url = bioguide_id.present? ? "https://unitedstates.github.io/images/congress/225x275/#{bioguide_id}.jpg" : nil
+    photo_base = 'https://unitedstates.github.io/images/congress/225x275'
+    rep_photo_url = bioguide_id.present? ? "#{photo_base}/#{bioguide_id}.jpg" : nil
 
     update!(
       title: official['type'],

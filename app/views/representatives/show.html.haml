@@ -11,18 +11,16 @@
             -# Left Column for the Photo
             .col-md-4.text-center
               - if @representative.photo_url.present?
-                = image_tag @representative.photo_url, class: "img-fluid shadow rounded"
+                = image_tag @representative.photo_url, class: 'img-fluid shadow rounded'
               - else
                 .p-4.bg-secondary.text-white.rounded No Photo Available
 
             -# Right Column for the Details
             .col-md-8
               %h3= @representative.title
-              
               %p.mt-3
                 %strong Party:
                 = @representative.party
-              
               - if @representative.address.present?
                 %p
                   %strong Address:
