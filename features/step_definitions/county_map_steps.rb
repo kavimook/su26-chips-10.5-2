@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Scenario 1 Steps
 Given('I visit the search page for {string}') do |address|
   # Adjust this path if your route expects something different (like ?county=)

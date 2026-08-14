@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
-describe RepresentativesController, type: :controller do
+describe RepresentativesController do
   describe 'GET #show' do
     # Create a dummy representative in the test database
     before do
