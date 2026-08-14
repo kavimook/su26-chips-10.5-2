@@ -23,20 +23,19 @@ require 'rails_helper'
 # RSpec.describe Representative do
 # end
 
-
 describe Representative, type: :model do
   before do
     fake_geocodio_response = {
-      "results" => [{
-        "response" => {
-          "results" => [{
-            "fields" => {
-              "congressional_districts" => [{
-                "current_legislators" => [{
-                  "type" => "representative",
-                  "bio" => { "first_name" => "John", "last_name" => "Doe", "party" => "Democrat" },
-                  "contact" => { "address" => "123 Main St", "phone" => "555-1234" },
-                  "references" => { "bioguide_id" => "D000123", "govtrack_id" => "412345" }
+      'results' => [{
+        'response' => {
+          'results' => [{
+            'fields' => {
+              'congressional_districts' => [{
+                'current_legislators' => [{
+                  'type' => 'representative',
+                  'bio' => { 'first_name' => 'John', 'last_name' => 'Doe', 'party' => 'Democrat' },
+                  'contact' => { 'address' => '123 Main St', 'phone' => '555-1234' },
+                  'references' => { 'bioguide_id' => 'D000123', 'govtrack_id' => '412345' }
                 }]
               }]
             }
@@ -46,13 +45,14 @@ describe Representative, type: :model do
     }.to_json
 
     # Notice it says :post here now!
-    stub_request(:post, /api\.geocod\.io/).
-      to_return(
-        status: 200, 
-        body: fake_geocodio_response, 
+    stub_request(:post, /api\.geocod\.io/)
+      .to_return(
+        status: 200,
+        body: fake_geocodio_response,
         headers: { 'Content-Type' => 'application/json' }
       )
   end
+
   describe '.civic_api_to_representative_params' do
     let(:rep_info) do
       {
@@ -77,22 +77,22 @@ describe Representative, type: :model do
     end
 
     it 'creates a new representative when one does not exist' do
-      expect {
+      expect do
         Representative.civic_api_to_representative_params(rep_info)
-      }.to change(Representative, :count).by(1)
+      end.to change(Representative, :count).by(1)
     end
 
     it 'does not create a duplicate representative if they already exist in the database' do
       Representative.create!(
-        name: 'Jane Doe', 
-        ocdid: '412345', 
+        name: 'Jane Doe',
+        ocdid: '412345',
         title: 'Representative'
       )
 
-      expect {
+      expect do
         Representative.civic_api_to_representative_params(rep_info)
-      }.not_to change(Representative, :count)
-      
+      end.not_to change(Representative, :count)
+
       # 3. Ensure the method still returns the existing representative in its output
       reps = Representative.civic_api_to_representative_params(rep_info)
       expect(reps.length).to eq(1)
@@ -100,5 +100,3 @@ describe Representative, type: :model do
     end
   end
 end
-
-    

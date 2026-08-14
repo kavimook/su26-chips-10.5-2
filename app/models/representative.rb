@@ -52,9 +52,9 @@ class Representative < ApplicationRecord
   def self.find_rep(official, title: '', ocdid: '')
     # Find the existing rep, or initialize a new one in memory if they don't exist
     rep = Representative.find_or_initialize_by(ocdid: ocdid, name: official['name'])
-    
+
     rep.update_from_geocodio(official)
-    
+
     rep
   end
 
@@ -62,7 +62,7 @@ class Representative < ApplicationRecord
     bioguide_id = official.dig('references', 'bioguide_id')
     rep_photo_url = bioguide_id.present? ? "https://unitedstates.github.io/images/congress/225x275/#{bioguide_id}.jpg" : nil
 
-    self.update!(
+    update!(
       title: official['type'],
       ocdid: official.dig('references', 'govtrack_id'),
       party: official.dig('bio', 'party'),
