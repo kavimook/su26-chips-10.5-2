@@ -37,7 +37,7 @@ module Congress
     attr_reader :client, :path, :params
 
     def initialize(client, path, params={})
-      @client = client
+      @client = Congress::Client.new(api_key)
       @path = path
       @params = params
     end
@@ -75,7 +75,7 @@ module Congress
     def initialize(api_key)
       raise ArgumentError, 'API key is missing' if api_key.nil? || api_key.strip.empty?
 
-      @api_key = api_key
+      @api_key = Rails.application.credentials[:CONGRESS_GOV_API_KEY]
       @conn = Faraday.new(url: BASE_URL) do |f|
         f.request :json
         f.response :json
