@@ -29,14 +29,18 @@ Scenario: The Representatives Page
 ## CHIPS 10.5 -- add iteration 1/2 additional pages here.
 ## You may want to set up conditions like searching for data, etc.
 
-## CS169: Add the first page here.
-# Be sure to tag the Scenario with @a11y
-# @a11y
-# Scenario: ...
+@a11y
+Scenario: The News Articles Page
+    Given a representative with news articles exists
+    When I visit the news articles page for that representative
+    Then the page should be axe clean
 
-## CS169: Add the second page here.
-# @a11y
-# Scenario: ...
+@a11y
+Scenario: The New News Article Page
+    Given a representative with news articles exists
+    And I am logged in
+    When I visit the new news article page for that representative
+    Then the page should be axe clean
 
 ## CS169: Add the third page here.
 # @a11y
