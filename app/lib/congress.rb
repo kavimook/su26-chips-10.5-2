@@ -83,8 +83,8 @@ module Congress
       end
     end
 
-    def bills(congress:, type: 'all', offset: 0, limit: 20)
-      path = type == 'all' ? "bill/#{congress}" : "bill/#{congress}/#{type}"
+    def bills(congress: nil, type: nil, offset: 0, limit: 20)
+      path = ['bill', congress, type].compact.join('/')
       Response.new(self, path, offset: offset, limit: limit)
     end
 

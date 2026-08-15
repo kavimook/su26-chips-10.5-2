@@ -4,6 +4,31 @@
 
 %h1 Bills
 
+%section.mb-4
+  %h2.h5 Search congress.gov
+  = form_with url: bills_path, method: :get do |form|
+    .row.g-2.align-items-end
+      .col-sm-4
+        = form.label :congress, 'Congress session', class: 'form-label'
+        = form.number_field :congress, value: @congress, class: 'form-control', placeholder: 'e.g. 119'
+      .col-sm-4
+        = form.label :bill_type, 'Bill type', class: 'form-label'
+        = form.select :bill_type, Bill::TYPES, { include_blank: true, selected: @bill_type }, class: 'form-select'
+      .col-sm-4
+        = form.submit 'Search', class: 'btn btn-primary'
+
+- if @search_results.present?
+  %section.mb-4
+    %h2.h5 Search results
+    - api_bills = @search_results['bills'] || []
+    %p.text-muted
+      Showing #{api_bills.size} of #{@search_results.dig('pagination', 'count')} results
+    %ul
+      - api_bills.each do |api_bill|
+        %li= api_bill['title']
+
+%h2.h5 Saved bills
+
 #bills
   - @bills.each do |bill|
     = render bill
