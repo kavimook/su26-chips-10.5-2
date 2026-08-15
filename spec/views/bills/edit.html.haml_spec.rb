@@ -8,8 +8,8 @@ RSpec.describe 'bills/edit' do
       title: 'MyString',
       congress: 1,
       number: 1,
-      original_chamber: 'MyString',
-      type: '',
+      original_chamber: 'house',
+      type: 'hr',
       summary: 'MyText'
     )
   end

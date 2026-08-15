@@ -9,16 +9,16 @@ RSpec.describe 'bills/index' do
                title: 'Title',
                congress: 2,
                number: 3,
-               original_chamber: 'Original Chamber',
-               type: 'Type',
+               original_chamber: 'house',
+               type: 'hr',
                summary: 'MyText'
              ),
              Bill.create!(
                title: 'Title',
                congress: 2,
                number: 3,
-               original_chamber: 'Original Chamber',
-               type: 'Type',
+               original_chamber: 'house',
+               type: 'hr',
                summary: 'MyText'
              )
            ])
@@ -30,8 +30,8 @@ RSpec.describe 'bills/index' do
     assert_select cell_selector, text: Regexp.new('Title'), count: 2
     assert_select cell_selector, text: Regexp.new(2.to_s), count: 2
     assert_select cell_selector, text: Regexp.new(3.to_s), count: 2
-    assert_select cell_selector, text: Regexp.new('Original Chamber'), count: 2
-    assert_select cell_selector, text: Regexp.new('Type'), count: 2
+    assert_select cell_selector, text: Regexp.new('house'), count: 2
+    assert_select cell_selector, text: Regexp.new('hr'), count: 2
     assert_select cell_selector, text: Regexp.new('MyText'), count: 2
   end
 end
