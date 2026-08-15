@@ -10,12 +10,10 @@
     .row.g-2.align-items-end
       .col-sm-4
         = form.label :congress, 'Congress session', class: 'form-label'
-        = form.number_field :congress, value: @congress, class: 'form-control',
-          placeholder: 'e.g. 119'
+        = form.number_field :congress, value: @congress, class: 'form-control', placeholder: 'e.g. 119'
       .col-sm-4
         = form.label :bill_type, 'Bill type', class: 'form-label'
-        = form.select :bill_type, Bill::TYPES, { include_blank: true, selected: @bill_type },
-          class: 'form-select'
+        = form.select :bill_type, Bill::TYPES, { include_blank: true, selected: @bill_type }, class: 'form-select'
       .col-sm-4
         = form.submit 'Search', class: 'btn btn-primary'
 
