@@ -6,7 +6,7 @@ Feature: Bills
   Scenario: Reaching the Bills page from the navbar
     Given I am on the homepage
     When I follow "Bills"
-    Then I should see "Bills"
+    Then I should see "Search congress.gov"
     And I should be on the bills page
 
   Scenario: Search results are shown in a formatted table

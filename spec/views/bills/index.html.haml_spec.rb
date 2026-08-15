@@ -34,7 +34,7 @@ RSpec.describe 'bills/index' do
     assert_select cell_selector, text: Regexp.new('hr'), count: 2
     assert_select cell_selector, text: Regexp.new('MyText'), count: 2
   end
-  
+
   context 'with congress.gov search results' do
     before do
       assign(:search_results,
