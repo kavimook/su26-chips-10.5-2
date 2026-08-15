@@ -13,7 +13,7 @@ Before do
         title:         'Postal Service Reform Act of 2022',
         type:          'HR',
         latestAction:  { actionDate: '2024-04-06',
-                         text: 'Became Public Law No: 117-108.' }
+                         text: 'Became Public Law No: 117-108' }
       }],
       pagination: { count: 25_000 }
     }.to_json,

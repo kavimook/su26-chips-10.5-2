@@ -18,14 +18,36 @@
         = form.submit 'Search', class: 'btn btn-primary'
 
 - if @search_results.present?
+  - api_bills = @search_results['bills'] || []
+  - total_results = @search_results.dig('pagination', 'count')
   %section.mb-4
     %h2.h5 Search results
-    - api_bills = @search_results['bills'] || []
     %p.text-muted
-      Showing #{api_bills.size} of #{@search_results.dig('pagination', 'count')} results
-    %ul
-      - api_bills.each do |api_bill|
-        %li= api_bill['title']
+      Showing #{api_bills.size} of #{total_results} results
+    - if api_bills.any?
+      .table-responsive-md
+        %table.table.table-striped.table-hover
+          %caption Bills returned by congress.gov
+          %thead.table-dark
+            %tr
+              %th{ scope: 'col' } #
+              %th{ scope: 'col' } Title
+              %th{ scope: 'col' } Congress
+              %th{ scope: 'col' } Type
+              %th{ scope: 'col' } Chamber
+              %th{ scope: 'col' } Last Action
+              %th{ scope: 'col' } Save
+          %tbody
+            - api_bills.each do |api_bill|
+              %tr
+                %td= bill_number_label(api_bill)
+                %td= api_bill['title']
+                %td= api_bill['congress']
+                %td= api_bill['type']
+                %td= api_bill['originChamber']
+                %td= bill_last_action(api_bill)
+                %td
+                  = button_to 'Save', bills_path, params: bill_save_params(api_bill), class: 'btn btn-success'
 
 %h2.h5 Saved bills
 

@@ -34,4 +34,37 @@ RSpec.describe 'bills/index' do
     assert_select cell_selector, text: Regexp.new('hr'), count: 2
     assert_select cell_selector, text: Regexp.new('MyText'), count: 2
   end
+
+  context 'with congress.gov search results' do
+    before do
+      assign(:search_results,
+             'bills' => [{
+               'congress' => 119, 'number' => '3076', 'originChamber' => 'House',
+               'title' => 'Postal Service Reform Act', 'type' => 'HR',
+               'latestAction' => { 'actionDate' => '2024-04-06',
+                                   'text' => 'Became Public Law No: 117-108' }
+             }],
+             'pagination' => { 'count' => 25_000 })
+    end
+
+    it 'shows how many results are displayed out of the total' do
+      render
+      expect(rendered).to include('Showing 1 of 25000 results')
+    end
+
+    it 'formats the number column as shorthand type and number' do
+      render
+      expect(rendered).to include('HR 3076')
+    end
+
+    it 'formats the last action with its date' do
+      render
+      expect(rendered).to include('Became Public Law No: 117-108 on Apr 6, 2024')
+    end
+
+    it 'renders a Save button for each result' do
+      render
+      expect(rendered).to include('Save')
+    end
+  end
 end
