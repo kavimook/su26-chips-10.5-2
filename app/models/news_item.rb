@@ -5,6 +5,7 @@
 # Table name: news_items
 #
 #  id                :integer          not null, primary key
+#  average_rating    :float
 #  description       :text
 #  issue             :string
 #  link              :string           not null
@@ -20,6 +21,7 @@
 class NewsItem < ApplicationRecord
   # TODO: this belongs to a user (creator_id)
   belongs_to :representative
+  has_many :ratings, dependent: :destroy
 
   ISSUES = [
     'Free Speech',
@@ -51,5 +53,15 @@ class NewsItem < ApplicationRecord
     NewsItem.find_by(
       representative_id: representative_id
     )
+  end
+
+  def refresh_average_rating!
+    update_column(:average_rating, ratings.average(:score)&.to_f) # rubocop:disable Rails/SkipsModelValidations
+  end
+
+  def rating_by(user)
+    return nil if user.nil?
+
+    ratings.find_by(user_id: user.id)
   end
 end

@@ -5,7 +5,7 @@ class NewsItemsController < ApplicationController
   before_action :set_news_item, only: %i[show]
 
   def index
-    @news_items = @representative.news_items
+    @news_items = @representative.news_items.includes(:ratings)
     @curr_user_id = current_user&.id
   end
 
