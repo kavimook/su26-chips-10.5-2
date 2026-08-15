@@ -141,7 +141,16 @@ RSpec/InstanceVariable:
 RSpec/DescribeClass:
   Exclude:
     - spec/linters/*
+    - spec/requests/*
+    - spec/views/**/*
 
 # Ideally, you'd want no more than 2.
 RSpec/MultipleExpectations:
   Max: 4
+  Exclude:
+    - spec/views/**/*
+
+RSpec/ExampleLength:
+  Exclude:
+    - spec/views/**/*
+

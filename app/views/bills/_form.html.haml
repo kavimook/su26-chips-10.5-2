@@ -1,0 +1,37 @@
+= form_with(model: bill) do |form|
+  - if bill.errors.any?
+    .alert.alert-danger
+      %h2
+        = pluralize(bill.errors.count, 'error')
+        prohibited this bill from being saved:
+
+      %ul
+        - bill.errors.each do |error|
+          %li= error.full_message
+
+  .form-group
+    = form.label :title
+    = form.text_field :title
+
+  .form-group
+    = form.label :congress
+    = form.number_field :congress
+
+  .form-group
+    = form.label :number
+    = form.number_field :number
+
+  .form-group
+    = form.label :original_chamber
+    = form.text_field :original_chamber
+
+  .form-group
+    = form.label :type
+    = form.text_field :type
+
+  .form-group
+    = form.label :summary
+    = form.text_area :summary
+
+  .form-group
+    = form.submit

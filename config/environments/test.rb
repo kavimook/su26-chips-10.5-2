@@ -33,6 +33,10 @@ Rails.application.configure do
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
 
+  # Host Authorization guards against DNS rebinding in production. Request specs
+  # issue requests to www.example.com, which application.rb's config.hosts blocks.
+  config.hosts.clear
+
   # Store uploaded files on the local file system in a temporary directory
   # config.active_storage.service = :test
 
