@@ -1,6 +1,24 @@
 %p.text-success= notice
 
-= render @bill
+- content_for :title, @bill.title
+
+%h1= @bill.title
+
+%dl.row
+  %dt.col-sm-3 Number
+  %dd.col-sm-9= saved_bill_number_label(@bill)
+
+  %dt.col-sm-3 Congress
+  %dd.col-sm-9= @bill.congress
+
+  %dt.col-sm-3 Type
+  %dd.col-sm-9= @bill.type
+
+  %dt.col-sm-3 Chamber
+  %dd.col-sm-9= @bill.original_chamber
+
+  %dt.col-sm-3 Summary
+  %dd.col-sm-9= @bill.summary.presence || 'No summary available.'
 
 %div
   = link_to 'Edit this bill', edit_bill_path(@bill)
@@ -8,3 +26,4 @@
   = link_to 'Back to bills', bills_path
 
   = button_to 'Destroy this bill', @bill, method: :delete
+  

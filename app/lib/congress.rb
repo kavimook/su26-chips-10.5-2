@@ -92,6 +92,10 @@ module Congress
       Response.new(self, "bill/#{congress}/#{bill_type}/#{bill_number}").get
     end
 
+    def summaries(congress:, bill_type:, bill_number:)
+      Response.new(self, "bill/#{congress}/#{bill_type}/#{bill_number}/summaries")
+    end
+
     def amendments(congress:, bill_type:, bill_number:)
       Response.new(self, "bill/#{congress}/#{bill_type}/#{bill_number}/amendments")
     end

@@ -14,3 +14,9 @@ Feature: Bills
     Then I should see "HR 3076"
     And I should see "Became Public Law No: 117-108 on Apr 6, 2024"
     And I should see "Showing 1 of 25000 results"
+
+  Scenario: Saving a bill from search results stores its summary
+    Given I am on the bills page
+    When I press "Save"
+    Then I should see "This bill addresses the finances and operations"
+    And I should see "Postal Service Reform Act of 2022"

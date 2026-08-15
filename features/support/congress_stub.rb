@@ -19,4 +19,17 @@ Before do
     }.to_json,
     headers: { 'Content-Type' => 'application/json' }
   )
+
+  stub_request(:get, %r{api\.congress\.gov/v3/bill/\d+/[a-z]+/\d+/summaries}).to_return(
+    status:  200,
+    body:    {
+      summaries: [{
+        actionDate: '2022-03-08',
+        actionDesc: 'Passed Senate',
+        text:       '<p>This bill addresses the finances and operations of the ' \
+                    'U.S. Postal Service.</p>'
+      }]
+    }.to_json,
+    headers: { 'Content-Type' => 'application/json' }
+  )
 end
