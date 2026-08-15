@@ -90,14 +90,14 @@ RSpec.describe '/bills' do
   describe 'PATCH /update' do
     context 'with valid parameters' do
       let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+        { title: 'An Updated Bill Title' }
       end
 
       it 'updates the requested bill' do
         bill = Bill.create! valid_attributes
         patch bill_url(bill), params: { bill: new_attributes }
         bill.reload
-        skip('Add assertions for updated state')
+        expect(bill.title).to eq('An Updated Bill Title')
       end
 
       it 'redirects to the bill' do
