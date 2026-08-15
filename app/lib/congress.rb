@@ -88,6 +88,12 @@ module Congress
       Response.new(self, path, offset: offset, limit: limit)
     end
 
+    # Most recently updated bills across all congresses, unfiltered by type.
+    # Used when a search has no congress/type params.
+    def recent_bills(offset: 0, limit: 20)
+      Response.new(self, 'bill', offset: offset, limit: limit)
+    end
+
     def bill_detail(congress:, bill_type:, bill_number:)
       Response.new(self, "bill/#{congress}/#{bill_type}/#{bill_number}").get
     end

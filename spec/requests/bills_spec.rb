@@ -29,10 +29,71 @@ RSpec.describe '/bills' do
   end
 
   describe 'GET /index' do
+    before do
+      stub_request(:get, /api\.congress\.gov/).to_return(
+        status: 200,
+        body: { bills: [] }.to_json,
+        headers: { 'Content-Type' => 'application/json' }
+      )
+    end
+
     it 'renders a successful response' do
       Bill.create! valid_attributes
       get bills_url
       expect(response).to be_successful
+    end
+  end
+
+  describe 'GET /index search' do
+    let(:recent_bill) do
+      { 'title' => 'A Recent Bill', 'congress' => 119, 'number' => 1, 'type' => 'HR' }
+    end
+
+    let(:filtered_bill) do
+      { 'title' => 'A Filtered Bill', 'congress' => 119, 'number' => 2, 'type' => 'S' }
+    end
+
+    context 'with no search parameters' do
+      it 'requests the most recent bills across all congresses' do
+        stub_request(:get, 'https://api.congress.gov/v3/bill')
+          .with(query: hash_including('limit' => '50'))
+          .to_return(
+            status: 200,
+            body: { bills: [recent_bill] }.to_json,
+            headers: { 'Content-Type' => 'application/json' }
+          )
+
+        get bills_url
+
+        expect(response).to be_successful
+        expect(response.body).to include('A Recent Bill')
+      end
+    end
+
+    context 'with a congress and bill type' do
+      it 'requests bills filtered to that congress and type' do
+        stub_request(:get, 'https://api.congress.gov/v3/bill/119/s')
+          .to_return(
+            status: 200,
+            body: { bills: [filtered_bill] }.to_json,
+            headers: { 'Content-Type' => 'application/json' }
+          )
+
+        get bills_url, params: { congress: 119, type: 's' }
+
+        expect(response).to be_successful
+        expect(response.body).to include('A Filtered Bill')
+      end
+    end
+
+    context 'with a bill type but no congress number' do
+      it 'does not call the API and shows a validation message' do
+        get bills_url, params: { type: 's' }
+
+        expect(response).to be_successful
+        expect(response.body).to include('Please provide a Congress number')
+        expect(WebMock).not_to have_requested(:get, /api\.congress\.gov/)
+      end
     end
   end
 

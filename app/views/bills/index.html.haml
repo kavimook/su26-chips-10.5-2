@@ -4,6 +4,40 @@
 
 %h1 Bills
 
+.card.mb-4
+  .card-body
+    %h2.h5 Search Congress.gov
+    = form_with url: bills_path, method: :get, local: true do
+      .row.g-2.align-items-end
+        .col-auto
+          = label_tag :congress, 'Congress'
+          = number_field_tag :congress, @congress, class: 'form-control', placeholder: '119'
+        .col-auto
+          = label_tag :type, 'Bill Type'
+          = select_tag :type,
+                       options_for_select([['Any type', '']] + Bill::TYPES.map { |t| [t.upcase, t] }, @type),
+                       class: 'form-control'
+        .col-auto
+          = submit_tag 'Search', class: 'btn btn-primary'
+    - if flash[:alert]
+      .alert.alert-warning.mt-3= flash[:alert]
+
+- if @search_results
+  #search-results
+    %h2.h5 Search Results
+    - if @search_results.empty?
+      %p No bills found.
+    - else
+      - @search_results.each do |result|
+        .border.rounded.p-2.mb-2
+          %p
+            %strong= "#{result['type']} #{result['number']}"
+            = " - #{result['title']}"
+          %p= "Congress: #{result['congress']}"
+
+%hr
+
+%h2.h5 Saved Bills
 #bills
   - @bills.each do |bill|
     = render bill

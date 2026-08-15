@@ -3,9 +3,21 @@
 class BillsController < ApplicationController
   before_action :set_bill, only: %i[show edit update destroy]
 
+  RESULTS_LIMIT = 50
+
   # GET /bills or /bills.json
   def index
     @bills = Bill.all
+    @congress = params[:congress].presence
+    @type = params[:type].presence
+
+    if @type.present? && @congress.blank?
+      flash.now[:alert] = 'Please provide a Congress number to search by bill type.'
+      @search_results = []
+      return
+    end
+
+    @search_results = fetch_search_results
   end
 
   # GET /bills/1 or /bills/1.json
@@ -67,5 +79,21 @@ class BillsController < ApplicationController
   # Only allow a list of trusted parameters through.
   def bill_params
     params.require(:bill).permit(:title, :congress, :number, :original_chamber, :type, :summary)
+  end
+
+  def fetch_search_results
+    response = if @congress.present?
+                 congress_client.bills(congress: @congress, type: @type || 'all', limit: RESULTS_LIMIT).get
+               else
+                 congress_client.recent_bills(limit: RESULTS_LIMIT).get
+               end
+    Array(response['bills'])
+  rescue Congress::Error => e
+    flash.now[:alert] = "Could not reach Congress.gov: #{e.message}"
+    []
+  end
+
+  def congress_client
+    @congress_client ||= Congress::Client.new(Rails.application.credentials[:CONGRESS_GOV_API_KEY])
   end
 end
