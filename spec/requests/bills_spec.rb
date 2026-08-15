@@ -28,6 +28,14 @@ RSpec.describe '/bills' do
       original_chamber: 'house', type: 'hr', summary: 'A short summary.' }
   end
 
+  before do
+    stub_request(:get, /api\.congress\.gov/).to_return(
+      status:  200,
+      body:    { bills: [], pagination: { count: 0 } }.to_json,
+      headers: { 'Content-Type' => 'application/json' }
+    )
+  end
+
   describe 'GET /index' do
     it 'renders a successful response' do
       Bill.create! valid_attributes

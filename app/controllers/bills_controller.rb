@@ -1,11 +1,21 @@
 # frozen_string_literal: true
 
 class BillsController < ApplicationController
+  SEARCH_LIMIT = 50
   before_action :set_bill, only: %i[show edit update destroy]
 
   # GET /bills or /bills.json
   def index
     @bills = Bill.all
+    @congress = params[:congress].presence
+    @bill_type = params[:bill_type].presence
+
+    if @bill_type && @congress.nil?
+      flash.now[:alert] = 'Searching by bill type requires a congress session number.'
+      return
+    end
+
+    @search_results = congress_api_bills
   end
 
   # GET /bills/1 or /bills/1.json
@@ -67,5 +77,18 @@ class BillsController < ApplicationController
   # Only allow a list of trusted parameters through.
   def bill_params
     params.require(:bill).permit(:title, :congress, :number, :original_chamber, :type, :summary)
+  end
+
+  def congress_api_bills
+    Congress::Client.new(congress_api_key)
+                    .bills(congress: @congress, type: @bill_type, limit: SEARCH_LIMIT)
+                    .get
+  rescue ArgumentError, Congress::Error, Faraday::Error => e
+    flash.now[:alert] = "Could not reach the congress.gov API: #{e.message}"
+    nil
+  end
+
+  def congress_api_key
+    ENV.fetch('CONGRESS_GOV_API_KEY', Rails.application.credentials[:CONGRESS_GOV_API_KEY])
   end
 end
