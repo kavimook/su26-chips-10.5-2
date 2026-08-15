@@ -1,0 +1,7 @@
+= form_with url: representative_news_item_ratings_path(representative, news_item), method: :post do |form|
+  .row.g-2.align-items-end
+    .col-auto
+      = form.label :score, 'Your rating', class: 'form-label'
+      = form.select :score, (1..5).to_a, { selected: user_score(news_item, current_user) }, class: 'form-select'
+    .col-auto
+      = form.submit 'Rate', class: 'btn btn-primary'
