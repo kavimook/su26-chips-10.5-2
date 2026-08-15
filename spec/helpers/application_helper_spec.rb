@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe ApplicationHelper do
   describe '.nav_items' do
     it 'includes a Bills entry' do
-      titles = described_class.nav_items.map { |item| item[:title] }
+      titles = described_class.nav_items.pluck(:title)
       expect(titles).to include('Bills')
     end
 
