@@ -57,4 +57,11 @@ RSpec.describe BillsHelper do
       expect(Bill.new(helper.bill_save_params(api_bill)[:bill])).to be_valid
     end
   end
+
+  describe '#saved_bill_number_label' do
+    it 'formats a Bill record the same way as an API result' do
+      bill = Bill.new(type: 'sres', number: 999)
+      expect(helper.saved_bill_number_label(bill)).to eq('SR 999')
+    end
+  end
 end

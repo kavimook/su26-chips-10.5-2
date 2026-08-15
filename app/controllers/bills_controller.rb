@@ -32,6 +32,7 @@ class BillsController < ApplicationController
   # POST /bills or /bills.json
   def create
     @bill = Bill.new(bill_params)
+    @bill.summary = fetch_bill_summary(@bill) if @bill.summary.blank?
 
     respond_to do |format|
       if @bill.save
@@ -90,5 +91,23 @@ class BillsController < ApplicationController
 
   def congress_api_key
     ENV.fetch('CONGRESS_GOV_API_KEY', Rails.application.credentials[:CONGRESS_GOV_API_KEY])
+  end
+
+  def fetch_bill_summary(bill)
+    return nil if bill.congress.blank? || bill.type.blank? || bill.number.blank?
+
+    client = Congress::Client.new(congress_api_key)
+    response = client.summaries(congress: bill.congress, bill_type: bill.type, bill_number: bill.number).get
+    latest_summary_text(response)
+  rescue ArgumentError, Congress::Error, Faraday::Error
+    nil
+  end
+
+  def latest_summary_text(response)
+    summaries = response['summaries']
+    return nil if summaries.blank?
+
+    latest = summaries.max_by { |summary| summary['actionDate'].to_s }
+    helpers.strip_tags(latest['text']).squish.presence
   end
 end

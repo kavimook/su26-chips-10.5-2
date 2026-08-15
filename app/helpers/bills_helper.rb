@@ -22,6 +22,11 @@ module BillsHelper
     "#{TYPE_SHORTHAND.fetch(type, type.upcase)} #{api_bill['number']}"
   end
 
+  # 'HR 3076' for a Bill record saved in our own database.
+  def saved_bill_number_label(bill)
+    bill_number_label('type' => bill.type, 'number' => bill.number)
+  end
+
   # 'Became Public Law No: 117-108 on Apr 6, 2024'
   def bill_last_action(api_bill)
     action = api_bill['latestAction']

@@ -81,6 +81,22 @@ RSpec.describe '/bills' do
       end
     end
 
+    context 'when the bill has no summary' do
+      before do
+        stub_request(:get, %r{/summaries}).to_return(
+          status:  200,
+          body:    { summaries: [{ actionDate: '2022-03-08',
+                                   text: '<p>A fetched summary.</p>' }] }.to_json,
+          headers: { 'Content-Type' => 'application/json' }
+        )
+      end
+
+      it 'fetches the summary from congress.gov' do
+        post bills_url, params: { bill: valid_attributes.except(:summary) }
+        expect(Bill.last.summary).to eq('A fetched summary.')
+      end
+    end
+
     context 'with invalid parameters' do
       it 'does not create a new Bill' do
         expect do
